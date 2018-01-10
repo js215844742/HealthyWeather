@@ -1,6 +1,7 @@
 package cn.jane.healthy.activity.area.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.jane.healthy.R;
+import cn.jane.healthy.activity.weather.WeatherActivity;
 import cn.jane.healthy.db.City;
 import cn.jane.healthy.db.County;
 import cn.jane.healthy.db.Provice;
@@ -80,6 +82,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY){
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -134,7 +142,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         }else{
             int proviceCode = selectedProvice.getProviceCode();
-            String address = URL + proviceCode;
+            String address = URL + "/" + proviceCode;
             queryFromService(address, "city");
         }
     }
@@ -157,7 +165,7 @@ public class ChooseAreaFragment extends Fragment {
         }else{
             int provinceCode = selectedProvice.getProviceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = URL + provinceCode + "/" + cityCode;
+            String address = URL + "/" + provinceCode + "/" + cityCode;
             queryFromService(address, "county");
         }
     }

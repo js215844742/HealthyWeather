@@ -2,6 +2,8 @@ package cn.jane.healthy.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import cn.jane.healthy.db.City;
 import cn.jane.healthy.db.County;
 import cn.jane.healthy.db.Provice;
+import cn.jane.healthy.gson.Weather;
 
 /**
  * Created by Jane on 2018/1/9.
@@ -72,7 +75,7 @@ public class Utility {
      * @return
      */
     public static boolean handleCountyResponse(String response, int cityId){
-        if (TextUtils.isEmpty(response)){
+        if (!TextUtils.isEmpty(response)){
             try {
                 JSONArray allCounties = new JSONArray(response);
                 for (int i = 0; i < allCounties.length(); i++) {
@@ -89,5 +92,22 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    /**
+     * 将返回的JSON数据解析成Weather实体类
+     * @param response
+     * @return
+     */
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
