@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +34,9 @@ import okhttp3.Response;
 public class WeatherActivity extends AppCompatActivity {
     private ScrollView weatherlayout;
     private ImageView bingPicImg;
-    private SwipeRefreshLayout swipeRefresh;
+    public SwipeRefreshLayout swipeRefresh;
+    private TextView navButton;
+    public DrawerLayout drawerLayout;
     private TextView titleCity;
     private TextView titleUpdateTime;
     private TextView degreeText;
@@ -74,6 +78,12 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingPic();
         }
 
+        navButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -85,6 +95,8 @@ public class WeatherActivity extends AppCompatActivity {
         weatherlayout = findViewById(R.id.weather_layout);
         bingPicImg = findViewById(R.id.bing_pic_img);
         swipeRefresh = findViewById(R.id.swipe_refresh);
+        navButton = findViewById(R.id.nav_button);
+        drawerLayout = findViewById(R.id.drawer_layout);
         titleCity = findViewById(R.id.title_city);
         titleUpdateTime = findViewById(R.id.title_update_time);
         degreeText = findViewById(R.id.degree_text);
@@ -97,6 +109,7 @@ public class WeatherActivity extends AppCompatActivity {
         sportText = findViewById(R.id.sport_text);
 
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+
     }
 
     private void loadBingPic(){
@@ -126,7 +139,7 @@ public class WeatherActivity extends AppCompatActivity {
      * 请求城市天气信息
      * @param weatherId
      */
-    private void requestWeather(String weatherId){
+    public void requestWeather(String weatherId){
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId +"&key=0e88532ea7044c3880b0c871050bba44";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
